@@ -3,21 +3,26 @@ type IfEquals<T, U, Y=unknown, N=never> =
   (<G>() => G extends U ? 1 : 2) ? Y : N;
 
 type PropValue = unknown
-type PropName = string | number
+type PropName = string | number | symbol
 
 interface Props {
-  [key: string]: PropValue
+  [key: PropName]: PropValue
 }
 
+type ComputedName = string | number | symbol
 type ComputedValue = unknown
 
 interface Computeds {
-  [key: string]: ComputedValue
+  [key: ComputedName]: ComputedValue
 }
 
 type PropPath = PropName[]
 
-type WorkHandler<CustomProps, CustomComputeds, Return> = (prop: CustomProps, computed: CustomComputeds, invalidatedProps?: PropPath[]) => Return
+type WorkHandler<CustomProps extends Props, CustomComputeds extends Computeds, Return> = (
+  prop: CustomProps,
+  computed: CustomComputeds,
+  invalidatedProps?: PropPath[]
+) => Return
 
 interface EventListener {
   element: HTMLElement,
@@ -25,7 +30,7 @@ interface EventListener {
   handler: (...args: unknown[]) => void
 }
 
-class Work<CustomProps, CustomComputeds, Return> {
+class Work<CustomProps extends Props, CustomComputeds extends Computeds, Return = void> {
   private _handler: WorkHandler<CustomProps, CustomComputeds, Return>
   private _dependencies: PropPath[]
 
@@ -57,7 +62,7 @@ class Work<CustomProps, CustomComputeds, Return> {
   }
 }
 
-type ReversedDependenciesStructure<CustomProps, CustomComputeds> = Record<
+type ReversedDependenciesStructure<CustomProps extends Props, CustomComputeds extends Computeds> = Record<
   PropName,
   {
     works: Work<CustomProps, CustomComputeds, void>[],
@@ -65,7 +70,7 @@ type ReversedDependenciesStructure<CustomProps, CustomComputeds> = Record<
   }
 >
 
-class ReversedDependencies<CustomProps, CustomComputeds> {
+class ReversedDependencies<CustomProps extends Props, CustomComputeds extends Computeds> {
   private _structure: ReversedDependenciesStructure<CustomProps, CustomComputeds> = { }
 
   get (path: PropPath): Work<CustomProps, CustomComputeds, void>[] {
@@ -174,7 +179,7 @@ class ReversedDependencies<CustomProps, CustomComputeds> {
  *  reactive.prop.blue = true
  * ```
  */
-export class Reactive<CustomProps extends Props = Record<string, unknown>, CustomComputeds extends Computeds = Record<string, unknown>> {
+export class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
   public prop: CustomProps = { } as CustomProps
   public computed: CustomComputeds = { } as CustomComputeds
   private _props: Partial<CustomProps> = { }
@@ -189,7 +194,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
   private _verbose: boolean
 
   private _linkedPropInvalidations: Partial<Record<keyof CustomProps, {
-    targetReactive: Reactive<Props, Computeds>,
+    targetReactive: Reactive<Partial<Props>, Partial<Computeds>>,
     targetPropName: PropName
   }[]>> = {}
 
@@ -452,37 +457,44 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
   defineFormProp (
     propName: keyof CustomProps,
     element: HTMLInputElement | HTMLSelectElement,
-    elementSetter?: (element: HTMLInputElement | HTMLSelectElement, value: PropValue) => void
+    accessors?: {
+      setter?: (element: HTMLInputElement | HTMLSelectElement, value: PropValue) => void
+      getter?: (element: HTMLInputElement | HTMLSelectElement) => PropValue
+    }
   ): void {
-    const getElementValue = () => {
+    const getElementValue = accessors?.getter ?? ((element: HTMLInputElement | HTMLSelectElement) => {
       if (element instanceof HTMLInputElement && element.getAttribute('type') == 'checkbox') {
         return element.checked
+      } else if (element instanceof HTMLSelectElement && element.getAttribute('multiple')) {
+        return Array.from(element.selectedOptions).map(option => option.value)
       } else {
         return element.value
       }
-    }
+    })
     if (!Object.prototype.hasOwnProperty.call(this._props, propName)) {
-      this.defineProp(propName, getElementValue() as CustomProps[keyof CustomProps])
+      this.defineProp(propName, getElementValue(element) as CustomProps[keyof CustomProps])
     }
 
     // Element => prop
     const handler = () => {
       if (element.checkValidity()) {
-        this.prop[propName] = getElementValue() as CustomProps[keyof CustomProps]
+        this.prop[propName] = getElementValue(element) as CustomProps[keyof CustomProps]
       }
     }
-    const eventName = element.tagName == 'INPUT' ? 'input' : 'change'
-    element.addEventListener(eventName, handler)
-    this._eventListeners.push({
-      element: element,
-      eventName: eventName,
-      handler: handler
+    const eventsNames = ['INPUT', 'TEXTAREA'].includes(element.tagName) ? ['input', 'change'] : ['change']
+    eventsNames.forEach(eventName => {
+      element.addEventListener(eventName, handler)
+      this._eventListeners.push({
+        element: element,
+        eventName: eventName,
+        handler: handler
+      })
     })
 
     // Prop => element
     this.defineWork(() => {
-      if (elementSetter) {
-        elementSetter(element, this.prop[propName])
+      if (accessors?.setter) {
+        accessors.setter(element, this.prop[propName])
       } else {
         if (element instanceof HTMLInputElement && element.getAttribute('type') == 'checkbox') {
           element.checked = !!this.prop[propName]
@@ -510,12 +522,15 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
     formLinks: {
       [key in keyof Partial<CustomProps>]: {
         element: HTMLInputElement | HTMLSelectElement,
-        elementSetter?: (element: HTMLInputElement | HTMLSelectElement, value: PropValue) => void
+        accessors?: {
+          setter?: (element: HTMLInputElement | HTMLSelectElement, value: PropValue) => void
+          getter?: (element: HTMLInputElement | HTMLSelectElement) => PropValue
+        }
       }
     }
   ): void {
     Object.keys(formLinks).forEach(propName => {
-      this.defineFormProp(propName, formLinks[propName].element, formLinks[propName].elementSetter)
+      this.defineFormProp(propName, formLinks[propName].element, formLinks[propName].accessors)
     })
   }
 
@@ -523,7 +538,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
    * Will mark a Prop as edited, without having to actually edit the Prop.
    */
   touch (propPath: PropName | PropPath): void {
-    if (typeof propPath == 'string' || typeof propPath == 'number') this._propEdited(propPath)
+    if (typeof propPath == 'string' || typeof propPath == 'number' || typeof propPath == 'symbol') this._propEdited(propPath)
     else this._propEdited(...propPath)
   }
 
@@ -671,10 +686,9 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
     sourcePropName: keyof CustomProps,
     targetPropName: keyof TargetProps
   ): void {
-    if (typeof targetPropName === 'symbol') throw new Error("Prop can't be indexed with a symbol")
     this._linkedPropInvalidations[sourcePropName] ||= []
     this._linkedPropInvalidations[sourcePropName]?.push({
-      targetReactive: targetReactive,
+      targetReactive: targetReactive as unknown as Reactive<Props, Computeds>,
       targetPropName: targetPropName
     })
   }
@@ -746,7 +760,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
   }
 
   private _getReversedWorksDependencies (): ReversedDependencies<CustomProps, CustomComputeds> {
-    const dependencies = new ReversedDependencies()
+    const dependencies = new ReversedDependencies<CustomProps, CustomComputeds>()
     this._works.forEach(work => {
       const workDependencies = work.getDependencies()
       workDependencies.forEach(dependency => {
@@ -758,7 +772,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
 
   private _checkLoopInStack (): boolean {
     const workList: Work<CustomProps, CustomComputeds, void>[] = []
-    const workCount = { }
+    const workCount: Record<number, number> = { }
     this._successiveStack.forEach(work => {
       let index = workList.indexOf(work)
       if (!~index) {
@@ -770,7 +784,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
     })
     let maxCount = 0
     Object.keys(workCount).forEach(index => {
-      if (workCount[index] > maxCount) maxCount = workCount[index]
+      if (workCount[parseInt(index)] > maxCount) maxCount = workCount[parseInt(index)]
     })
     return maxCount > 20
   }
@@ -779,7 +793,7 @@ export class Reactive<CustomProps extends Props = Record<string, unknown>, Custo
     return typeof value === 'object' && value !== null
   }
 
-  private _getDeep (obj: Record<string, unknown>, keys: PropPath): unknown {
+  private _getDeep (obj: Record<PropName, unknown>, keys: PropPath): unknown {
     if (keys.length == 1) return obj[keys[0]]
     else {
       const next = obj[keys[0]]

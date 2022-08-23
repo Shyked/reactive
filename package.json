@@ -1,0 +1,25 @@
+{
+  "name": "reactive",
+  "version": "1.0.0",
+  "description": "PURPOSE\r =======",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shyked/reactive.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shyked/reactive/issues"
+  },
+  "homepage": "https://github.com/Shyked/reactive#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "doctoc": "^2.2.0",
+    "eslint": "^8.22.0",
+    "eslint-config-standard": "^17.0.0",
+    "typescript": "^4.7.4"
+  }
+}
