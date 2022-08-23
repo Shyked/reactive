@@ -179,7 +179,7 @@ class ReversedDependencies<CustomProps extends Props, CustomComputeds extends Co
  *  reactive.prop.blue = true
  * ```
  */
-export class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
+export default class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
   public prop: CustomProps = { } as CustomProps
   public computed: CustomComputeds = { } as CustomComputeds
   private _props: Partial<CustomProps> = { }

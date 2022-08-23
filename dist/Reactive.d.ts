@@ -75,7 +75,7 @@ declare type WorkHandler<CustomProps extends Props, CustomComputeds extends Comp
  *  reactive.prop.blue = true
  * ```
  */
-export declare class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
+export default class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
     prop: CustomProps;
     computed: CustomComputeds;
     private _props;
