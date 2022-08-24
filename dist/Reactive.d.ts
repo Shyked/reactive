@@ -12,9 +12,6 @@ interface Computeds {
 declare type PropPath = PropName[];
 declare type WorkHandler<CustomProps extends Props, CustomComputeds extends Computeds, Return> = (prop: CustomProps, computed: CustomComputeds, invalidatedProps?: PropPath[]) => Return;
 /**
- * PURPOSE
- * =======
- *
  * Reactive properties allow to reverse how properties are linked together.
  * Instead of using events to say
  *   "When A has changed, then update B"
@@ -23,32 +20,9 @@ declare type WorkHandler<CustomProps extends Props, CustomComputeds extends Comp
  *
  * The Reactive will automatically re-build B when A is updated
  *
+ * @example
  *
- * TERMINOLOGY
- * ===========
- *
- * Prop:
- *   It is an object property that is constantly observed.
- *   When edited, every Works that make use of this Prop will be re-run
- *
- * Computed:
- *   Computed properties are built and updated automatically from Props.
- *   Each Computed relies on a function with no side effect that uses one or severals props to compute a new value
- *
- * Work:
- *   Functions with side effects. You can use a Work to update Props
- *   or do whatever you want. When a Prop used by a Work is modified, the Work will be re-run.
- *
- * Linker:
- *   Links a Select or an Input Element to an existing prop.
- *   Editing the prop will change the Element value.
- *   When the Element value changes, the prop value will also be changed.
- *
- *
- * EXAMPLE
- * =======
- *
- * ```
+ * ```js
  *  let reactive = new Reactive({
  *    red: false,
  *    blue: false
@@ -76,7 +50,15 @@ declare type WorkHandler<CustomProps extends Props, CustomComputeds extends Comp
  * ```
  */
 export default class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
+    /**
+     * Defined props can be accessed and set directly form the Reactive instance
+     * using this property. Dependencies will be rebuilt consequently.
+     */
     prop: CustomProps;
+    /**
+     * Defined computeds can be accessed directly form the Reactive instance
+     * using this property. Dependencies will be rebuilt consequently.
+     */
     computed: CustomComputeds;
     private _props;
     private _computeds;
@@ -105,7 +87,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     /**
      * Define multiple new Props at once.
      *
-     * @see {@link Reactive.defineProp}
+     * @see {@link defineProp}
      *
      * @example
      * reactive.defineProps({
@@ -133,15 +115,17 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     /**
      * Define multiple Works at once.
      *
-     * @see {@link Reactive.defineWork}
+     * @see {@link defineWork}
      *
      * @example
+     * ```js
      * reactive.defineWorks([
      *   (prop, computed) => {
      *     // Print `prop.blue` value each time it is mutated
      *     console.log('Is blue:', prop.blue)
      *   }
      * ])
+     * ```
      */
     defineWorks(handlers: WorkHandler<CustomProps, CustomComputeds, void>[]): void;
     /**
@@ -157,7 +141,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     /**
      * Define multiple Computeds at once.
      *
-     * @see {@link Reactive.defineComputed}
+     * @see {@link defineComputed}
      *
      * @example
      * reactive.defineComputeds({
@@ -178,15 +162,17 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     /**
      * Define multiple shared Props at once.
      *
-     * @see {@link Reactive.defineSharedProp}
+     * @see {@link defineSharedProp}
      *
      * @example
+     * ```js
      * // Reflects `eiffelTower.reactive.lightsOn`
      * // to `paris.reactive.towerLightsOn`
      * paris.reactive.defineSharedProps(eiffelTower.reactive, {
      *   lightsOn: 'towerLightsOn'
      *   lightsList: 'towerLightsList'
      * })
+     * ```
      */
     defineSharedProps<SourceProps extends Props, SourceComputeds extends Computeds>(sourceReactive: Reactive<SourceProps, SourceComputeds>, map: Partial<Record<keyof SourceProps, keyof CustomProps>>): void;
     /**
@@ -203,7 +189,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     /**
      * Define multiple Form Links at once.
      *
-     * @see {@link Reactive.defineFormProp}
+     * @see {@link defineFormProp}
      *
      * @example
      * reactive.defineFormProps({

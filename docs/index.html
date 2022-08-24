@@ -1,0 +1,150 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>reactive</title><meta name="description" content="Documentation for reactive"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><link rel="stylesheet" href="assets/custom.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container">
+<div class="table-cell" id="tsd-search" data-base=".">
+<div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
+<ul class="results">
+<li class="state loading">Preparing search index...</li>
+<li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">reactive</a></div>
+<div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
+<div class="container container-main">
+<div class="col-8 col-content">
+<div class="tsd-page-title">
+<h2>reactive</h2></div>
+<div class="tsd-panel tsd-typography"><!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<p><strong>Table of Contents</strong></p>
+<ul>
+<li><a href="#what-is-reactive">What is Reactive</a></li>
+<li><a href="#how-does-that-improve-my-code">How does that improve my code</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#terminology">Terminology</a><ul>
+<li><a href="#prop">Prop</a></li>
+<li><a href="#computed">Computed</a></li>
+<li><a href="#work">Work</a></li>
+</ul>
+</li>
+<li><a href="#how-to-use">How to use</a><ul>
+<li><a href="#props-define-your-data-structure">Props: Define your data structure</a></li>
+<li><a href="#form-props-sync-your-form-with-your-data">Form Props: Sync your form with your data</a></li>
+<li><a href="#computeds-define-your-dynamic-data">Computeds: Define your dynamic data</a></li>
+<li><a href="#works-define-your-data-structure-side-effects">Works: Define your data structure side effects</a></li>
+</ul>
+</li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+
+<a href="#what-is-reactive" id="what-is-reactive" style="color: inherit; text-decoration: none;">
+  <h1>What is Reactive</h1>
+</a>
+<p>Ever struggled having to keep your page and your forms synced with a
+JavaScript data structure? When chaging a piece of data, you have to call this
+and that function to keep your page up to date with it.</p>
+<p>If you are not already using a popular framework dealing with reactivity, you
+may be considering re-writing your app with one of these.</p>
+<p><strong>&quot;Reactive&quot; is a small and standalone library that can introduce reactivity on
+any project.</strong></p>
+
+<a href="#how-does-that-improve-my-code" id="how-does-that-improve-my-code" style="color: inherit; text-decoration: none;">
+  <h1>How does that improve my code</h1>
+</a>
+<p>Without reactivity:</p>
+<pre><code><span class="hl-0">When</span><span class="hl-1"> </span><span class="hl-2">A</span><span class="hl-1"> </span><span class="hl-0">is</span><span class="hl-1"> </span><span class="hl-0">updated</span><span class="hl-1">, </span><span class="hl-0">update</span><span class="hl-1"> </span><span class="hl-2">C</span><br/><span class="hl-0">When</span><span class="hl-1"> </span><span class="hl-2">B</span><span class="hl-1"> </span><span class="hl-0">is</span><span class="hl-1"> </span><span class="hl-0">udpated</span><span class="hl-1">, </span><span class="hl-0">update</span><span class="hl-1"> </span><span class="hl-2">C</span><br/><span class="hl-0">The</span><span class="hl-1"> </span><span class="hl-0">updated</span><span class="hl-1"> </span><span class="hl-0">value</span><span class="hl-1"> </span><span class="hl-3">of</span><span class="hl-1"> </span><span class="hl-2">C</span><span class="hl-1"> </span><span class="hl-0">is</span><span class="hl-1"> </span><span class="hl-2">A</span><span class="hl-1">+</span><span class="hl-2">B</span>
+</code></pre>
+<p>With reactivity:</p>
+<pre><code><span class="hl-0">The</span><span class="hl-1"> </span><span class="hl-0">updated</span><span class="hl-1"> </span><span class="hl-0">value</span><span class="hl-1"> </span><span class="hl-3">of</span><span class="hl-1"> </span><span class="hl-2">C</span><span class="hl-1"> </span><span class="hl-0">is</span><span class="hl-1"> </span><span class="hl-2">A</span><span class="hl-1">+</span><span class="hl-2">B</span>
+</code></pre>
+<p>Reactive will read your function, understand that C is depends on A and B, and
+will thus update C whenever A or B is updated.</p>
+
+<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+  <h1>Example</h1>
+</a>
+<p>Without Reactive:</p>
+<pre><code class="language-js"><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-4">updateFirstname</span><span class="hl-1"> (</span><span class="hl-0">firstname</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-0">profile</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1"> = </span><span class="hl-0">firstname</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-firstname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">firstname</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">whenEitherUpdated</span><span class="hl-1">()</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-4">updateLastname</span><span class="hl-1"> (</span><span class="hl-0">lastname</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-0">profile</span><span class="hl-1">.</span><span class="hl-0">lastname</span><span class="hl-1"> = </span><span class="hl-0">lastname</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-lastname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">lastname</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">whenEitherUpdated</span><span class="hl-1">()</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-4">whenEitherUpdated</span><span class="hl-1"> () {</span><br/><span class="hl-1">  </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-fullname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">profile</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1"> + </span><span class="hl-5">&#39; &#39;</span><span class="hl-1"> + </span><span class="hl-0">profile</span><span class="hl-1">.</span><span class="hl-0">lastname</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-4">updateFirstname</span><span class="hl-1">(</span><span class="hl-5">&#39;John&#39;</span><span class="hl-1">);</span>
+</code></pre>
+<p>With Reactive:</p>
+<pre><code class="language-js"><span class="hl-0">reactive</span><span class="hl-1">.</span><span class="hl-4">defineWorks</span><span class="hl-1">([</span><br/><span class="hl-1">  (</span><span class="hl-0">prop</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-firstname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1">,</span><br/><span class="hl-1">  (</span><span class="hl-0">prop</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-lastname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">lastname</span><span class="hl-1">,</span><br/><span class="hl-1">  (</span><span class="hl-0">prop</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;profile-fullname&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1"> + </span><span class="hl-5">&#39; &#39;</span><span class="hl-1"> + </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">lastname</span><span class="hl-1">,</span><br/><span class="hl-1">])</span><br/><br/><span class="hl-0">reactive</span><span class="hl-1">.</span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1"> = </span><span class="hl-5">&#39;John&#39;</span>
+</code></pre>
+<p>Full demo and playground : <a href="https://codesandbox.io/s/reactive-demo-p30xwl?file=/src/index.js">https://codesandbox.io/s/reactive-demo-p30xwl?file=/src/index.js</a></p>
+
+<a href="#terminology" id="terminology" style="color: inherit; text-decoration: none;">
+  <h1>Terminology</h1>
+</a>
+
+<a href="#prop" id="prop" style="color: inherit; text-decoration: none;">
+  <h2>Prop</h2>
+</a>
+<p>It is an object property that is constantly observed.
+When edited, every Works that make use of this Prop will be re-run</p>
+
+<a href="#computed" id="computed" style="color: inherit; text-decoration: none;">
+  <h2>Computed</h2>
+</a>
+<p>Computed properties are built and updated automatically from Props.
+Each Computed relies on a function with no side effect that uses one or severals props to compute a new value</p>
+
+<a href="#work" id="work" style="color: inherit; text-decoration: none;">
+  <h2>Work</h2>
+</a>
+<p>Functions with side effects. You can use a Work to update Props
+or do whatever you want. When a Prop used by a Work is modified, the Work will be re-run.</p>
+
+<a href="#how-to-use" id="how-to-use" style="color: inherit; text-decoration: none;">
+  <h1>How to use</h1>
+</a>
+
+<a href="#props-define-your-data-structure" id="props-define-your-data-structure" style="color: inherit; text-decoration: none;">
+  <h2>Props: Define your data structure</h2>
+</a>
+<pre><code class="language-js"><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-2">reactive</span><span class="hl-1"> = </span><span class="hl-3">new</span><span class="hl-1"> </span><span class="hl-4">Reactive</span><span class="hl-1">();</span><br/><br/><span class="hl-0">reactive</span><span class="hl-1">.</span><span class="hl-4">defineProps</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-0">firstname:</span><span class="hl-1"> </span><span class="hl-5">&#39;John&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">lastname:</span><span class="hl-1"> </span><span class="hl-5">&#39;Doe&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-0">company:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">name:</span><span class="hl-1"> </span><span class="hl-5">&#39;Acme&#39;</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">});</span>
+</code></pre>
+
+<a href="#form-props-sync-your-form-with-your-data" id="form-props-sync-your-form-with-your-data" style="color: inherit; text-decoration: none;">
+  <h2>Form Props: Sync your form with your data</h2>
+</a>
+<pre><code class="language-js"><span class="hl-0">reactive</span><span class="hl-1">.</span><span class="hl-4">defineFormProps</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-6">// Standard inputs &amp; selects</span><br/><span class="hl-1">  </span><span class="hl-0">firstname:</span><span class="hl-1"> { </span><span class="hl-0">element:</span><span class="hl-1"> </span><span class="hl-0">firstnameInput</span><span class="hl-1"> },</span><br/><br/><span class="hl-1">  </span><span class="hl-6">// Using a custom library with custom getters/setters</span><br/><span class="hl-1">  </span><span class="hl-0">customSelect:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">element:</span><span class="hl-1"> </span><span class="hl-0">customSelect</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-0">accessors:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-4">getter</span><span class="hl-0">:</span><span class="hl-1"> (</span><span class="hl-0">select</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-7">return</span><span class="hl-1"> </span><span class="hl-4">getMySelectValue</span><span class="hl-1">(</span><span class="hl-0">select</span><span class="hl-1">)</span><br/><span class="hl-1">      },</span><br/><span class="hl-1">      </span><span class="hl-4">setter</span><span class="hl-0">:</span><span class="hl-1"> (</span><span class="hl-0">select</span><span class="hl-1">, </span><span class="hl-0">value</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-4">setMySelectValue</span><span class="hl-1">(</span><span class="hl-0">select</span><span class="hl-1">, </span><span class="hl-0">value</span><span class="hl-1">)</span><br/><span class="hl-1">      }</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span>
+</code></pre>
+
+<a href="#computeds-define-your-dynamic-data" id="computeds-define-your-dynamic-data" style="color: inherit; text-decoration: none;">
+  <h2>Computeds: Define your dynamic data</h2>
+</a>
+<pre><code class="language-js"><span class="hl-0">reacitve</span><span class="hl-1">.</span><span class="hl-4">defineComuteds</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-4">fullname</span><span class="hl-0">:</span><span class="hl-1"> (</span><span class="hl-0">prop</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">firstname</span><span class="hl-1"> + </span><span class="hl-5">&#39; &#39;</span><span class="hl-1"> + </span><span class="hl-0">prop</span><span class="hl-1">.</span><span class="hl-0">lastname</span><br/><span class="hl-1">})</span>
+</code></pre>
+
+<a href="#works-define-your-data-structure-side-effects" id="works-define-your-data-structure-side-effects" style="color: inherit; text-decoration: none;">
+  <h2>Works: Define your data structure side effects</h2>
+</a>
+<pre><code class="language-js"><span class="hl-0">reactive</span><span class="hl-1">.</span><span class="hl-4">defineWorks</span><span class="hl-1">([</span><br/><span class="hl-1">  </span><span class="hl-6">// Short syntax</span><br/><span class="hl-1">  (</span><span class="hl-0">prop</span><span class="hl-1">, </span><span class="hl-0">computed</span><span class="hl-1">) </span><span class="hl-3">=&gt;</span><span class="hl-1"> </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;my-name&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">computed</span><span class="hl-1">.</span><span class="hl-0">fullname</span><span class="hl-1">,</span><br/><br/><span class="hl-1">  </span><span class="hl-6">// Descriptive syntax</span><br/><span class="hl-1">  </span><span class="hl-3">function</span><span class="hl-1"> </span><span class="hl-4">syncFullname</span><span class="hl-1"> (</span><span class="hl-0">prop</span><span class="hl-1">, </span><span class="hl-0">computed</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-0">document</span><span class="hl-1">.</span><span class="hl-4">getElementById</span><span class="hl-1">(</span><span class="hl-5">&#39;my-name&#39;</span><span class="hl-1">).</span><span class="hl-0">innerText</span><span class="hl-1"> = </span><span class="hl-0">computed</span><span class="hl-1">.</span><span class="hl-0">fullname</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">])</span>
+</code></pre>
+
+<a href="#typescript" id="typescript" style="color: inherit; text-decoration: none;">
+  <h2>TypeScript</h2>
+</a>
+<pre><code class="language-ts"><span class="hl-3">const</span><span class="hl-1"> </span><span class="hl-2">reactive</span><span class="hl-1"> = </span><span class="hl-3">new</span><span class="hl-1"> </span><span class="hl-4">Reactive</span><span class="hl-1">&lt;{</span><br/><span class="hl-1">  </span><span class="hl-0">prop1</span><span class="hl-1">: </span><span class="hl-8">string</span><br/><span class="hl-1">}, {</span><br/><span class="hl-1">  </span><span class="hl-0">computed1</span><span class="hl-1">: </span><span class="hl-8">string</span><br/><span class="hl-1">}&gt;()</span>
+</code></pre>
+</div></div>
+<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="tsd-navigation settings">
+<details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility">
+<h4 class="uppercase">Member Visibility</h4><form>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></form></div>
+<div class="tsd-theme-toggle">
+<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<nav class="tsd-navigation primary">
+<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<div class="tsd-accordion-details">
+<ul>
+<li class="current selected"><a href="modules.html">reactive</a>
+<ul>
+<li class="tsd-kind-module"><a href="modules/_internal_.html">&lt;internal&gt;</a></li></ul></li></ul></div></details></nav></div></div>
+<div class="container tsd-generator">
+<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
+<div class="overlay"></div><script src="assets/main.js"></script></body></html>

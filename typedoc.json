@@ -1,0 +1,4 @@
+{
+  "customCss": "./theme/doc.css",
+  "excludeExternals": true
+}

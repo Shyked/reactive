@@ -116,9 +116,6 @@ class ReversedDependencies<CustomProps extends Props, CustomComputeds extends Co
 }
 
 /**
- * PURPOSE
- * =======
- *
  * Reactive properties allow to reverse how properties are linked together.
  * Instead of using events to say
  *   "When A has changed, then update B"
@@ -127,32 +124,9 @@ class ReversedDependencies<CustomProps extends Props, CustomComputeds extends Co
  *
  * The Reactive will automatically re-build B when A is updated
  *
+ * @example
  *
- * TERMINOLOGY
- * ===========
- *
- * Prop:
- *   It is an object property that is constantly observed.
- *   When edited, every Works that make use of this Prop will be re-run
- *
- * Computed:
- *   Computed properties are built and updated automatically from Props.
- *   Each Computed relies on a function with no side effect that uses one or severals props to compute a new value
- *
- * Work:
- *   Functions with side effects. You can use a Work to update Props
- *   or do whatever you want. When a Prop used by a Work is modified, the Work will be re-run.
- *
- * Linker:
- *   Links a Select or an Input Element to an existing prop.
- *   Editing the prop will change the Element value.
- *   When the Element value changes, the prop value will also be changed.
- *
- *
- * EXAMPLE
- * =======
- *
- * ```
+ * ```js
  *  let reactive = new Reactive({
  *    red: false,
  *    blue: false
@@ -180,8 +154,18 @@ class ReversedDependencies<CustomProps extends Props, CustomComputeds extends Co
  * ```
  */
 export default class Reactive<CustomProps extends Props = Props, CustomComputeds extends Computeds = Computeds> {
+  /**
+   * Defined props can be accessed and set directly form the Reactive instance
+   * using this property. Dependencies will be rebuilt consequently.
+   */
   public prop: CustomProps = { } as CustomProps
+
+  /**
+   * Defined computeds can be accessed directly form the Reactive instance
+   * using this property. Dependencies will be rebuilt consequently.
+   */
   public computed: CustomComputeds = { } as CustomComputeds
+
   private _props: Partial<CustomProps> = { }
   private _computeds: Partial<CustomComputeds> = { }
   private _works: Work<CustomProps, CustomComputeds, void>[] = []
@@ -271,7 +255,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   /**
    * Define multiple new Props at once.
    *
-   * @see {@link Reactive.defineProp}
+   * @see {@link defineProp}
    *
    * @example
    * reactive.defineProps({
@@ -312,15 +296,17 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   /**
    * Define multiple Works at once.
    *
-   * @see {@link Reactive.defineWork}
+   * @see {@link defineWork}
    *
    * @example
+   * ```js
    * reactive.defineWorks([
    *   (prop, computed) => {
    *     // Print `prop.blue` value each time it is mutated
    *     console.log('Is blue:', prop.blue)
    *   }
    * ])
+   * ```
    */
   defineWorks (handlers: WorkHandler<CustomProps, CustomComputeds, void>[]): void {
     handlers.forEach(handler => {
@@ -375,7 +361,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   /**
    * Define multiple Computeds at once.
    *
-   * @see {@link Reactive.defineComputed}
+   * @see {@link defineComputed}
    *
    * @example
    * reactive.defineComputeds({
@@ -427,15 +413,17 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   /**
    * Define multiple shared Props at once.
    *
-   * @see {@link Reactive.defineSharedProp}
+   * @see {@link defineSharedProp}
    *
    * @example
+   * ```js
    * // Reflects `eiffelTower.reactive.lightsOn`
    * // to `paris.reactive.towerLightsOn`
    * paris.reactive.defineSharedProps(eiffelTower.reactive, {
    *   lightsOn: 'towerLightsOn'
    *   lightsList: 'towerLightsList'
    * })
+   * ```
    */
   defineSharedProps<SourceProps extends Props, SourceComputeds extends Computeds> (
     sourceReactive: Reactive<SourceProps, SourceComputeds>,
@@ -508,7 +496,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   /**
    * Define multiple Form Links at once.
    *
-   * @see {@link Reactive.defineFormProp}
+   * @see {@link defineFormProp}
    *
    * @example
    * reactive.defineFormProps({

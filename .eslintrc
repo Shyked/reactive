@@ -16,10 +16,6 @@
     "standard"
   ],
 
-  "plugins": [
-    "html"
-  ],
-
   "globals": {
     "document": "readonly",
     "window": "readonly"
