@@ -178,6 +178,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
   private _verbose: boolean
 
   private _linkedPropInvalidations: Partial<Record<keyof CustomProps, {
+    // eslint-disable-next-line no-use-before-define
     targetReactive: Reactive<Partial<Props>, Partial<Computeds>>,
     targetPropName: PropName
   }[]>> = {}
@@ -473,9 +474,9 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     eventsNames.forEach(eventName => {
       element.addEventListener(eventName, handler)
       this._eventListeners.push({
-        element: element,
-        eventName: eventName,
-        handler: handler
+        element,
+        eventName,
+        handler
       })
     })
 
@@ -677,7 +678,7 @@ export default class Reactive<CustomProps extends Props = Props, CustomComputeds
     this._linkedPropInvalidations[sourcePropName] ||= []
     this._linkedPropInvalidations[sourcePropName]?.push({
       targetReactive: targetReactive as unknown as Reactive<Props, Computeds>,
-      targetPropName: targetPropName
+      targetPropName
     })
   }
 
